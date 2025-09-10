@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
-    "outDir": "./dist",
-    "rootDir": "./",
+    "target": "es2016",
+    "module": "commonjs",
+    "rootDir": "./src/",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "outDir": "./dist/",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "esModuleInterop": true
+    "skipLibCheck": true
   },
-  "include": ["index.ts", "proxy.ts"]
+  "ts-node": { "transpileOnly": true },
+  "include": ["src/**/*"],
 }
