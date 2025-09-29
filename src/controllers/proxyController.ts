@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { ProxyScoreRequest } from '../models/ProxyScoreRequest';
 import { proxyQueue } from '../repositories/proxyQueue';
+import { ScoreProxy } from '../patterns/ScoreProxy';
+import { LoggingScoreDecorator } from '../patterns/LoggingScoreDecorator';
 
 export const proxyScoreController = (req: Request, res: Response) => {
   const clientId = req.header('client-id');
@@ -13,7 +15,6 @@ export const proxyScoreController = (req: Request, res: Response) => {
     return res.status(400).json({ error: 'CPF inválido ou não fornecido' });
   }
 
-
   // Log detalhado da requisição recebida
   console.log(`[PROXY] Requisição recebida: client-id=${clientId}, cpf=${cpf}`);
 
@@ -23,10 +24,11 @@ export const proxyScoreController = (req: Request, res: Response) => {
     cpf
   };
 
-  // Enfileira a requisição para o scheduler
-  proxyQueue.enqueue({ request: proxyRequest, res });
-  return res.status(202).json({
-    message: 'Requisição recebida e será processada pelo proxy',
-    request: proxyRequest
-  });
+  // Instancia o serviço real (poderia ser um ScoreService)
+  // Aqui, para exemplo, vamos usar o proxy e o decorator
+  const scoreProxy = new ScoreProxy();
+  const decoratedProxy = new LoggingScoreDecorator(scoreProxy);
+
+  // Processa a requisição usando o decorator (que usa o proxy internamente)
+  decoratedProxy.processRequest(proxyRequest, res);
 };
